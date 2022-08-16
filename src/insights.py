@@ -38,7 +38,10 @@ def get_max_salary(path):
     max_salary = read(path)
     all_salaries = list()
     for salary in max_salary:
-        if len(salary["max_salary"]) != 0 and salary["max_salary"].isnumeric():
+        if (
+            len(salary["max_salary"]) != int
+            and salary["max_salary"].isnumeric()
+        ):
             all_salaries.append(int(salary["max_salary"]))
     return max(all_salaries)
 
@@ -47,35 +50,27 @@ def get_min_salary(path):
     min_salary = read(path)
     all_salaries = list()
     for salary in min_salary:
-        if len(salary["min_salary"]) != 0 and salary["min_salary"].isnumeric():
+        if (
+            len(salary["min_salary"]) != int
+            and salary["min_salary"].isnumeric()
+        ):
             all_salaries.append(int(salary["min_salary"]))
     return min(all_salaries)
 
 
 def matches_salary_range(job, salary):
-    """Checks if a given salary is in the salary range of a given job
-
-    Parameters
-    ----------
-    job : dict
-        The job with `min_salary` and `max_salary` keys
-    salary : int
-        The salary to check if matches with salary range of the job
-
-    Returns
-    -------
-    bool
-        True if the salary is in the salary range of the job, False otherwise
-
-    Raises
-    ------
-    ValueError
-        If `job["min_salary"]` or `job["max_salary"]` doesn't exists
-        If `job["min_salary"]` or `job["max_salary"]` aren't valid integers
-        If `job["min_salary"]` is greather than `job["max_salary"]`
-        If `salary` isn't a valid integer
-    """
-    pass
+    if "min_salary" not in job or "max_salary" not in job:
+        raise ValueError("Missing values.")
+    elif (
+        type(job["max_salary"]) != int
+        or type(job["min_salary"]) != int
+        or type(salary) != int
+    ):
+        raise ValueError("Non-numeric values.")
+    elif job["min_salary"] > job["max_salary"]:
+        raise ValueError("Invalid values")
+    else:
+        return job["min_salary"] <= salary and job["max_salary"] >= salary
 
 
 def filter_by_salary_range(jobs, salary):
